@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiền Định - 3D Buddha Meditation</title>
+    <meta name="description" content="Trải nghiệm không gian thiền định với tượng Phật 3D, trầm hương và âm thanh thiền định">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <canvas id="scene-canvas"></canvas>
+
+        <!-- UI Overlay -->
+        <div id="overlay">
+            <header id="header">
+                <h1 id="main-title">☸ Thiền Định ☸</h1>
+                <p class="subtitle">Tĩnh Tâm · An Lạc · Giác Ngộ</p>
+            </header>
+
+            <div id="controls">
+                <button id="btn-incense" class="btn-glow" aria-label="Thắp hương">
+                    <span class="btn-icon">🪔</span>
+                    <span class="btn-text">Thắp Hương</span>
+                </button>
+
+                <div id="timer-display" class="hidden">
+                    <div class="timer-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="timer-bg" cx="50" cy="50" r="45"/>
+                            <circle id="timer-progress" class="timer-fg" cx="50" cy="50" r="45"/>
+                        </svg>
+                        <span id="timer-text">30:00</span>
+                    </div>
+                </div>
+
+                <button id="btn-audio" class="btn-subtle" aria-label="Bật/tắt âm thanh">
+                    <span id="audio-icon">🔇</span>
+                    <span id="audio-text">Âm Thanh</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading">
+            <div class="loading-content">
+                <div class="lotus-loader">
+                    <div class="petal p1"></div>
+                    <div class="petal p2"></div>
+                    <div class="petal p3"></div>
+                    <div class="petal p4"></div>
+                    <div class="petal p5"></div>
+                    <div class="petal p6"></div>
+                    <div class="petal p7"></div>
+                    <div class="petal p8"></div>
+                    <div class="center-dot"></div>
+                </div>
+                <p class="loading-text">Đang khởi tạo không gian thiền...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
