@@ -1409,7 +1409,7 @@ class MeditationScene {
         const freq = 220.0; 
         
         const masterGain = this.audioContext.createGain();
-        masterGain.connect(this.mainGain);
+        masterGain.connect(this.masterGain);
         
         masterGain.gain.setValueAtTime(0, t);
         masterGain.gain.linearRampToValueAtTime(0.8, t + 0.05);
