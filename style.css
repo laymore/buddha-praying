@@ -293,6 +293,35 @@ html, body {
     box-shadow: 0 0 15px rgba(212, 165, 116, 0.1);
 }
 
+/* --- Active Prayer text below subtitle --- */
+#active-prayer {
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    font-weight: 300;
+    font-style: italic;
+    color: #fff;
+    margin-top: 0.8rem;
+    letter-spacing: 0.05em;
+    text-shadow: 
+        0 0 10px rgba(240, 201, 135, 0.6),
+        0 0 20px rgba(240, 201, 135, 0.2);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.4;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#active-prayer.hidden {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+    margin-top: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
 #audio-icon {
     font-size: 1.1rem;
 }

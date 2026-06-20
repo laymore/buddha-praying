@@ -1518,6 +1518,15 @@ class MeditationScene {
             prayerPanel.classList.add('hidden');
         }
 
+        // Hide active prayer
+        const activePrayer = document.getElementById('active-prayer');
+        if (activePrayer) {
+            activePrayer.classList.add('hidden');
+            setTimeout(() => {
+                activePrayer.textContent = '';
+            }, 800);
+        }
+
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
             this.timerInterval = null;
@@ -1621,6 +1630,14 @@ class MeditationScene {
                 const text = textarea.value.trim();
                 if (text.length > 0) {
                     this.showFloatingPrayer(text);
+
+                    // Display active prayer under subtitle
+                    const activePrayer = document.getElementById('active-prayer');
+                    if (activePrayer) {
+                        activePrayer.textContent = `“ ${text} ”`;
+                        activePrayer.classList.remove('hidden');
+                    }
+
                     textarea.value = '';
                     // Close panel and reset toggle button active state
                     if (prayerPanel) prayerPanel.classList.add('hidden');
