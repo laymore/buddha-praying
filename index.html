@@ -21,6 +21,42 @@
                 <p class="subtitle">Tĩnh Tâm · An Lạc · Giác Ngộ</p>
             </header>
 
+            <!-- Prayer Panel (Left Corner) -->
+            <div id="prayer-panel" class="hidden">
+                <h2>Lời Nguyện Cầu</h2>
+                <textarea id="prayer-input" placeholder="Hãy viết lời khấn nguyện của bạn tại đây... (Ví dụ: gia đình bình an, công việc thuận lợi...)"></textarea>
+                
+                <div class="prayer-templates">
+                    <p class="templates-title">💡 Chọn nhanh câu khấn mẫu:</p>
+                    
+                    <div class="template-category">
+                        <button class="category-toggle">💰 Tài Lộc</button>
+                        <div class="category-list">
+                            <div class="template-item">Cầu mong công sự hanh thông, tài lộc dồi dào, vạn sự hanh cát như ý.</div>
+                            <div class="template-item">Nguyện xin gia đạo bình an, kinh doanh hồng phát, công danh thăng tiến.</div>
+                        </div>
+                    </div>
+
+                    <div class="template-category">
+                        <button class="category-toggle">🌸 Tình Duyên</button>
+                        <div class="category-list">
+                            <div class="template-item">Cầu chúc gia đình hòa thuận, vợ chồng đồng lòng, con cái hiếu thảo.</div>
+                            <div class="template-item">Nguyện gặp người duyên lành, tình cảm bền chặt, hạnh phúc đong đầy.</div>
+                        </div>
+                    </div>
+
+                    <div class="template-category">
+                        <button class="category-toggle">🍀 Sức Khỏe</button>
+                        <div class="category-list">
+                            <div class="template-item">Cầu cho cha mẹ mạnh khỏe, bình an, sống đời cùng con cháu.</div>
+                            <div class="template-item">Nguyện cầu thân thể khang kiện, tâm trí thanh thản, không tai ương tật bệnh.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="btn-send-prayer" class="btn-glow">Gửi Nguyện Cầu</button>
+            </div>
+
             <div id="controls">
                 <button id="btn-incense" class="btn-glow" aria-label="Thắp hương">
                     <span class="btn-icon">🪔</span>
@@ -41,6 +77,10 @@
                     <button id="btn-audio" class="btn-subtle" aria-label="Bật/tắt âm thanh">
                         <span id="audio-icon">🔇</span>
                         <span id="audio-text">Âm Thanh</span>
+                    </button>
+                    <button id="btn-prayer" class="btn-subtle hidden" aria-label="Hiện bảng nguyện cầu">
+                        <span id="prayer-icon">📜</span>
+                        <span id="prayer-text">Nguyện Cầu</span>
                     </button>
                     <button id="btn-hide" class="btn-subtle" aria-label="Ẩn giao diện">
                         <span id="hide-icon">👁️</span>

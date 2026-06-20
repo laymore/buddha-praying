@@ -259,10 +259,17 @@ html, body {
 #overlay.ui-hidden #header,
 #overlay.ui-hidden #btn-incense,
 #overlay.ui-hidden #timer-display,
-#overlay.ui-hidden #btn-audio {
+#overlay.ui-hidden #btn-audio,
+#overlay.ui-hidden #btn-prayer {
     opacity: 0;
     pointer-events: none;
     transform: translateY(-10px);
+}
+
+#overlay.ui-hidden #prayer-panel {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translate(-40px, -50%) !important;
 }
 
 #overlay.ui-hidden #header {
@@ -277,7 +284,7 @@ html, body {
     opacity: 1;
 }
 
-#header, #btn-incense, #timer-display, #btn-audio {
+#header, #btn-incense, #timer-display, #btn-audio, #btn-prayer, #prayer-panel {
     transition: all 0.5s ease;
 }
 .btn-subtle.active {
@@ -439,5 +446,245 @@ html, body {
     }
     #overlay {
         justify-content: flex-end;
+    }
+}
+
+/* --- Prayer Panel --- */
+#prayer-panel {
+    position: fixed;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 320px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    z-index: 100;
+    pointer-events: all;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#prayer-panel.hidden {
+    opacity: 0;
+    transform: translate(-40px, -50%);
+    pointer-events: none;
+}
+
+#prayer-panel h2 {
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--gold-bright);
+    letter-spacing: 0.15em;
+    text-align: center;
+    border-bottom: 1px solid rgba(212, 165, 116, 0.15);
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+#prayer-input {
+    width: 100%;
+    height: 100px;
+    background: rgba(20, 12, 4, 0.5);
+    border: 1px solid rgba(212, 165, 116, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: #fff;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    resize: none;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#prayer-input::placeholder {
+    color: rgba(212, 165, 116, 0.4);
+}
+
+#prayer-input:focus {
+    border-color: rgba(212, 165, 116, 0.5);
+}
+
+.prayer-templates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.templates-title {
+    font-size: 0.9rem;
+    color: var(--text-soft);
+    margin-bottom: 0.2rem;
+    opacity: 0.8;
+}
+
+.template-category {
+    border: 1px solid rgba(212, 165, 116, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(20, 12, 4, 0.3);
+}
+
+.category-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--gold-bright);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.category-toggle:hover {
+    background: rgba(212, 165, 116, 0.08);
+}
+
+.category-toggle::after {
+    content: '▾';
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.template-category.active .category-toggle::after {
+    transform: rotate(180deg);
+}
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    background: rgba(10, 6, 4, 0.5);
+    border-top: 1px solid rgba(212, 165, 116, 0.05);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.template-category.active .category-list {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.template-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(212, 165, 116, 0.03);
+    line-height: 1.3;
+}
+
+.template-item:last-child {
+    border-bottom: none;
+}
+
+.template-item:hover {
+    background: rgba(212, 165, 116, 0.12);
+    color: #fff;
+}
+
+#btn-send-prayer {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+/* --- Toggle Button --- */
+#btn-prayer.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+    width: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    overflow: hidden;
+}
+
+/* --- Floating Prayer Text Animation --- */
+.floating-prayer-text {
+    position: absolute;
+    left: 50%;
+    top: 62%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-family: var(--font-serif);
+    font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+    font-weight: 300;
+    font-style: italic;
+    text-align: center;
+    letter-spacing: 0.08em;
+    pointer-events: none;
+    z-index: 50;
+    text-shadow: 
+        0 0 10px rgba(240, 201, 135, 0.8),
+        0 0 20px rgba(240, 201, 135, 0.4),
+        0 0 30px rgba(240, 201, 135, 0.2);
+    animation: floatPrayer 9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    white-space: pre-wrap;
+    max-width: 80%;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    background: rgba(10, 6, 4, 0.25);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+@keyframes floatPrayer {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 30px) scale(0.9);
+        filter: blur(4px);
+    }
+    12% {
+        opacity: 0.95;
+        transform: translate(-50%, 0) scale(1.02);
+        filter: blur(0px);
+    }
+    30% {
+        opacity: 0.95;
+        transform: translate(-50%, -20px) scale(1);
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -180px) scale(0.95);
+        filter: blur(8px);
+    }
+}
+
+/* --- Mobile Responsive for Prayer Panel --- */
+@media (max-width: 640px) {
+    #prayer-panel {
+        left: 1rem;
+        right: 1rem;
+        top: 22%;
+        width: auto;
+        transform: none;
+    }
+    
+    #prayer-panel.hidden {
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
+    }
+
+    .floating-prayer-text {
+        max-width: 90%;
+        padding: 0.8rem 1.2rem;
     }
 }

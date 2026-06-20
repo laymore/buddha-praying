@@ -1403,6 +1403,17 @@ class MeditationScene {
         const timerDisplay = document.getElementById('timer-display');
         timerDisplay.classList.remove('hidden');
 
+        // Show prayer button and panel
+        const btnPrayer = document.getElementById('btn-prayer');
+        if (btnPrayer) {
+            btnPrayer.classList.remove('hidden');
+            btnPrayer.classList.add('active');
+        }
+        const prayerPanel = document.getElementById('prayer-panel');
+        if (prayerPanel) {
+            prayerPanel.classList.remove('hidden');
+        }
+
         // Start Om chanting if audio is on
         if (this.isAudioPlaying || !this.audioContext) {
             if (!this.audioContext) this.initAudio();
@@ -1496,6 +1507,17 @@ class MeditationScene {
     extinguishIncense() {
         this.isIncenseBurning = false;
 
+        // Hide prayer button and panel
+        const btnPrayer = document.getElementById('btn-prayer');
+        if (btnPrayer) {
+            btnPrayer.classList.add('hidden');
+            btnPrayer.classList.remove('active');
+        }
+        const prayerPanel = document.getElementById('prayer-panel');
+        if (prayerPanel) {
+            prayerPanel.classList.add('hidden');
+        }
+
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
             this.timerInterval = null;
@@ -1552,6 +1574,70 @@ class MeditationScene {
                 btnHide.querySelector('#hide-text').textContent = 'Ẩn UI';
             }
         });
+
+        // Toggle prayer panel
+        const btnPrayer = document.getElementById('btn-prayer');
+        const prayerPanel = document.getElementById('prayer-panel');
+        if (btnPrayer && prayerPanel) {
+            btnPrayer.addEventListener('click', () => {
+                prayerPanel.classList.toggle('hidden');
+                btnPrayer.classList.toggle('active');
+            });
+        }
+
+        // Toggle template categories (accordion)
+        document.querySelectorAll('.category-toggle').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const category = e.currentTarget.parentElement;
+                // Close other categories
+                document.querySelectorAll('.template-category').forEach(cat => {
+                    if (cat !== category) {
+                        cat.classList.remove('active');
+                    }
+                });
+                // Toggle current
+                category.classList.toggle('active');
+            });
+        });
+
+        // Click template item to insert text
+        document.querySelectorAll('.template-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const text = e.currentTarget.textContent.trim();
+                const textarea = document.getElementById('prayer-input');
+                if (textarea) {
+                    textarea.value = text;
+                    textarea.focus();
+                }
+            });
+        });
+
+        // Send prayer
+        const btnSend = document.getElementById('btn-send-prayer');
+        if (btnSend) {
+            btnSend.addEventListener('click', () => {
+                const textarea = document.getElementById('prayer-input');
+                if (!textarea) return;
+                const text = textarea.value.trim();
+                if (text.length > 0) {
+                    this.showFloatingPrayer(text);
+                    textarea.value = '';
+                    // Close panel and reset toggle button active state
+                    if (prayerPanel) prayerPanel.classList.add('hidden');
+                    if (btnPrayer) btnPrayer.classList.remove('active');
+                }
+            });
+        }
+    }
+
+    showFloatingPrayer(text) {
+        const floatingText = document.createElement('div');
+        floatingText.className = 'floating-prayer-text';
+        floatingText.textContent = text;
+        document.getElementById('app').appendChild(floatingText);
+        setTimeout(() => {
+            floatingText.remove();
+        }, 9000);
     }
 
     // ---- ANIMATION LOOP ----
