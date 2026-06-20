@@ -834,17 +834,17 @@ class MeditationScene {
             {
                 // Left stick (Front-left)
                 pos: [-0.12, 0.23, 0.05],
-                rot: [0.08, 0, -0.15]
+                rot: [0.08, 0, 0.18]
             },
             {
                 // Middle stick (Center-back)
                 pos: [0.0, 0.23, -0.06],
-                rot: [-0.08, 0, 0]
+                rot: [-0.10, 0, 0]
             },
             {
                 // Right stick (Front-right)
                 pos: [0.12, 0.23, 0.05],
-                rot: [0.08, 0, 0.15]
+                rot: [0.08, 0, -0.18]
             }
         ];
 
