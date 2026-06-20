@@ -20,7 +20,7 @@ const CONFIG = {
         ambientSmokeCount: 120,
     },
     dust: {
-        count: 600,
+        count: 120,
         spread: 12,
     },
     camera: {
@@ -1033,7 +1033,7 @@ class MeditationScene {
             size: 0.06,
             sizeAttenuation: true,
             transparent: true,
-            opacity: 0.4,
+            opacity: 0.1,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
             color: 0xffe8c0,
