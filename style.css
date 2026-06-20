@@ -248,6 +248,38 @@ html, body {
     color: var(--gold-bright);
 }
 
+.controls-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- UI Hidden State --- */
+#overlay.ui-hidden #header,
+#overlay.ui-hidden #btn-incense,
+#overlay.ui-hidden #timer-display,
+#overlay.ui-hidden #btn-audio {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+}
+
+#overlay.ui-hidden #header {
+    transform: translateY(-20px);
+}
+
+#overlay.ui-hidden #btn-hide {
+    opacity: 0.3;
+}
+
+#overlay.ui-hidden #btn-hide:hover {
+    opacity: 1;
+}
+
+#header, #btn-incense, #timer-display, #btn-audio {
+    transition: all 0.5s ease;
+}
 .btn-subtle.active {
     border-color: rgba(212, 165, 116, 0.35);
     color: var(--gold-bright);

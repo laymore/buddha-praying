@@ -1390,13 +1390,54 @@ class MeditationScene {
         if (this.isAudioPlaying || !this.audioContext) {
             if (!this.audioContext) this.initAudio();
             if (!this.isAudioPlaying) this.toggleAudio();
+            this.playBellSound();
             this.startOmChanting();
         } else if (this.isAudioPlaying) {
+            this.playBellSound();
             this.startOmChanting();
         }
 
         // Start timer interval
         this.timerInterval = setInterval(() => this.updateTimer(), 1000);
+    }
+
+    playBellSound() {
+        if (!this.audioContext) return;
+        
+        const t = this.audioContext.currentTime;
+        const duration = 6.0;
+        const freq = 220.0; 
+        
+        const masterGain = this.audioContext.createGain();
+        masterGain.connect(this.mainGain);
+        
+        masterGain.gain.setValueAtTime(0, t);
+        masterGain.gain.linearRampToValueAtTime(0.8, t + 0.05);
+        masterGain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+        
+        const partials = [
+            { f: freq * 1.0, a: 1.0 },
+            { f: freq * 2.76, a: 0.5 },
+            { f: freq * 5.4, a: 0.2 },
+            { f: freq * 8.9, a: 0.1 }
+        ];
+        
+        partials.forEach(p => {
+            const osc = this.audioContext.createOscillator();
+            const gain = this.audioContext.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(p.f, t);
+            
+            gain.gain.setValueAtTime(p.a, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + (duration * 0.5));
+            
+            osc.connect(gain);
+            gain.connect(masterGain);
+            
+            osc.start(t);
+            osc.stop(t + duration);
+        });
     }
 
     animateStickAppearance() {
@@ -1496,6 +1537,19 @@ class MeditationScene {
 
         document.getElementById('btn-audio').addEventListener('click', () => {
             this.toggleAudio();
+        });
+
+        document.getElementById('btn-hide').addEventListener('click', () => {
+            const overlay = document.getElementById('overlay');
+            overlay.classList.toggle('ui-hidden');
+            const btnHide = document.getElementById('btn-hide');
+            if (overlay.classList.contains('ui-hidden')) {
+                btnHide.querySelector('#hide-icon').textContent = '👁️‍🗨️';
+                btnHide.querySelector('#hide-text').textContent = 'Hiện UI';
+            } else {
+                btnHide.querySelector('#hide-icon').textContent = '👁️';
+                btnHide.querySelector('#hide-text').textContent = 'Ẩn UI';
+            }
         });
     }
 
