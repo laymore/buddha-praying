@@ -831,27 +831,29 @@ class MeditationScene {
         const angles = [-0.15, 0, 0.15];
         const zOffsets = [-0.03, 0.03, -0.01];
 
+        const stickLength = 1.6;
+
         angles.forEach((angle, i) => {
             // Stick body
-            const stickLength = 0.8;
-            const stickGeo = new THREE.CylinderGeometry(0.008, 0.008, stickLength, 8);
+            const stickGeo = new THREE.CylinderGeometry(0.016, 0.016, stickLength, 8);
+            stickGeo.translate(0, stickLength / 2, 0); // Pivot at bottom
             const stick = new THREE.Mesh(stickGeo, stickMat);
-            // Position stick so it's rooted in the ash.
-            // Ash is at y=0.33 local in burner, so root at ~0.23, center is at 0.23+0.4 = 0.63
-            stick.position.set(angle * 0.6, 0.63, zOffsets[i]);
+            
+            // Position stick so it's rooted in the ash (y=0.23)
+            stick.position.set(angle * 0.6, 0.23, zOffsets[i]);
             stick.rotation.z = angle * 0.4; // Spread them out more
             stick.rotation.x = zOffsets[i] * 2;
             stickGroup.add(stick);
             this.incenseSticks.push(stick);
 
             // Glowing tip
-            const tipGeo = new THREE.SphereGeometry(0.018, 12, 8);
+            const tipGeo = new THREE.SphereGeometry(0.036, 12, 8);
             const tip = new THREE.Mesh(tipGeo, tipMat.clone());
-            // Position at top of stick
-            const topY = 0.63 + stickLength / 2;
-            const topX = angle * 0.6 + Math.sin(angle * 0.4) * (stickLength / 2);
-            const topZ = zOffsets[i] + Math.sin(zOffsets[i] * 2) * (stickLength / 2);
-            tip.position.set(topX, topY, topZ);
+            
+            stick.updateMatrix();
+            const topLocal = new THREE.Vector3(0, stickLength, 0).applyMatrix4(stick.matrix);
+            tip.position.copy(topLocal);
+            
             stickGroup.add(tip);
             this.incenseTips.push(tip);
         });
@@ -1367,6 +1369,7 @@ class MeditationScene {
 
         // Show smoke
         this.incenseSmokePoints.visible = true;
+        this.incenseSmokePoints.material.opacity = 0.08;
 
         // Reset smoke data
         this.incenseSmokeData.forEach(p => {
@@ -1471,22 +1474,6 @@ class MeditationScene {
         document.getElementById('timer-progress').style.strokeDashoffset =
             circumference * progress;
 
-        // Update stick height (shrinking)
-        const heightRatio = this.incenseTimeRemaining / CONFIG.incense.burnDuration;
-        this.incenseSticks.forEach(stick => {
-            stick.scale.y = Math.max(0.05, heightRatio);
-            // Center of stick needs to move down as it shrinks so the base stays fixed.
-            // Base was at 0.75 - 0.4 = 0.35
-            stick.position.y = 0.35 + (0.8 * heightRatio) / 2;
-        });
-
-        // Update tip positions
-        this.incenseTips.forEach((tip, i) => {
-            const stick = this.incenseSticks[i];
-            const topY = stick.position.y + stick.scale.y * 0.4; // 0.8 / 2
-            tip.position.y = topY;
-        });
-
         if (this.incenseTimeRemaining <= 0) {
             this.extinguishIncense();
         }
@@ -1571,6 +1558,10 @@ class MeditationScene {
 
         // Animate incense smoke if burning
         if (this.isIncenseBurning) {
+            // Calculate progress and update stick lengths
+            const progress = this.incenseTimeRemaining / CONFIG.incense.burnDuration;
+            this.updateIncenseSticks(progress);
+
             this.updateIncenseSmoke(time);
         }
 
@@ -1669,14 +1660,14 @@ class MeditationScene {
 
                 const lifeRatio = p.life / p.maxLife;
 
-                // Movement: rise with turbulence
-                p.x += p.vx + Math.sin(time * 2 + p.phase) * 0.003;
-                p.y += p.vy * (1 + lifeRatio * 0.5);
-                p.z += p.vz + Math.cos(time * 1.5 + p.phase * 1.7) * 0.003;
+                // Movement: rise with turbulence (slowed down)
+                p.x += p.vx + Math.sin(time * 1.5 + p.phase) * 0.0015;
+                p.y += p.vy * (1 + lifeRatio * 0.3);
+                p.z += p.vz + Math.cos(time * 1.2 + p.phase * 1.7) * 0.0015;
 
                 // Slight drift
-                p.vx += (Math.random() - 0.5) * 0.0003;
-                p.vz += (Math.random() - 0.5) * 0.0003;
+                p.vx += (Math.random() - 0.5) * 0.0001;
+                p.vz += (Math.random() - 0.5) * 0.0001;
 
                 // Size grows then shrinks
                 const sizeCurve = Math.sin(lifeRatio * Math.PI);
@@ -1699,9 +1690,9 @@ class MeditationScene {
                     p.x = worldPos.x + (Math.random() - 0.5) * 0.03;
                     p.y = worldPos.y;
                     p.z = worldPos.z + (Math.random() - 0.5) * 0.03;
-                    p.vx = (Math.random() - 0.5) * 0.005;
-                    p.vy = 0.008 + Math.random() * 0.005;
-                    p.vz = (Math.random() - 0.5) * 0.005;
+                    p.vx = (Math.random() - 0.5) * 0.002;
+                    p.vy = 0.004 + Math.random() * 0.002;
+                    p.vz = (Math.random() - 0.5) * 0.002;
                     p.size = Math.random() * 0.4 + 0.15;
                     p.phase = Math.random() * Math.PI * 2;
 
@@ -1716,6 +1707,20 @@ class MeditationScene {
 
         this.incenseSmokePoints.geometry.attributes.position.needsUpdate = true;
         this.incenseSmokePoints.geometry.attributes.size.needsUpdate = true;
+    }
+
+    updateIncenseSticks(progress) {
+        if (!this.incenseSticks || !this.incenseTips) return;
+        
+        progress = Math.max(0.05, Math.min(1, progress));
+        const stickLength = 1.6;
+        
+        this.incenseSticks.forEach((stick, i) => {
+            stick.scale.y = progress;
+            stick.updateMatrix();
+            const topLocal = new THREE.Vector3(0, stickLength, 0).applyMatrix4(stick.matrix);
+            this.incenseTips[i].position.copy(topLocal);
+        });
     }
 
     updateCandleFlicker(time) {
@@ -1751,3 +1756,4 @@ class MeditationScene {
 // LAUNCH
 // =============================================
 const app = new MeditationScene();
+window.app = app;
