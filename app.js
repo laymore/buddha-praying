@@ -828,21 +828,35 @@ class MeditationScene {
         this.incenseSticks = [];
         this.incenseTips = [];
 
-        const angles = [-0.15, 0, 0.15];
-        const zOffsets = [-0.03, 0.03, -0.01];
-
         const stickLength = 1.6;
 
-        angles.forEach((angle, i) => {
+        const stickConfigs = [
+            {
+                // Left stick (Front-left)
+                pos: [-0.12, 0.23, 0.05],
+                rot: [0.08, 0, -0.15]
+            },
+            {
+                // Middle stick (Center-back)
+                pos: [0.0, 0.23, -0.06],
+                rot: [-0.08, 0, 0]
+            },
+            {
+                // Right stick (Front-right)
+                pos: [0.12, 0.23, 0.05],
+                rot: [0.08, 0, 0.15]
+            }
+        ];
+
+        stickConfigs.forEach((cfg, i) => {
             // Stick body
             const stickGeo = new THREE.CylinderGeometry(0.016, 0.016, stickLength, 8);
             stickGeo.translate(0, stickLength / 2, 0); // Pivot at bottom
             const stick = new THREE.Mesh(stickGeo, stickMat);
             
-            // Position stick so it's rooted in the ash (y=0.23)
-            stick.position.set(angle * 0.6, 0.23, zOffsets[i]);
-            stick.rotation.z = angle * 0.4; // Spread them out more
-            stick.rotation.x = zOffsets[i] * 2;
+            // Position and rotate
+            stick.position.set(cfg.pos[0], cfg.pos[1], cfg.pos[2]);
+            stick.rotation.set(cfg.rot[0], cfg.rot[1], cfg.rot[2]);
             stickGroup.add(stick);
             this.incenseSticks.push(stick);
 
